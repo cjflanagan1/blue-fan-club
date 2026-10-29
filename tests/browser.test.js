@@ -145,3 +145,20 @@ test('live mode: server failure keeps values and never shows success', async () 
   assert.ok(await page.locator('button[type=submit]').isEnabled());
   await page.context().close();
 });
+
+test('live mode: already-enrolled number shows the duplicate error', async () => {
+  const page = await openPage('https://example.test/register');
+  await page.route('https://example.test/register', route =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":false,"code":"duplicate","message":"This number already enrolled"}', headers: { 'Access-Control-Allow-Origin': '*' } }));
+  await fillValid(page);
+  await page.click('button[type=submit]');
+  await page.waitForFunction(() => document.querySelector('#bf-missing').textContent === 'This number already enrolled');
+  assert.strictEqual(await page.textContent('#bf-phone-error'), 'This number already enrolled');
+  assert.ok(await page.isHidden('.bf-success'));
+  assert.ok(await page.locator('button[type=submit]').isDisabled());
+  await page.locator('#bf-phone').fill('');
+  await page.locator('#bf-phone').pressSequentially('6155550000');
+  assert.ok(await page.isHidden('#bf-phone-error'));
+  assert.ok(await page.locator('button[type=submit]').isEnabled());
+  await page.context().close();
+});

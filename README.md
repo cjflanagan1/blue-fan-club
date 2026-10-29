@@ -9,24 +9,24 @@ It's a static site hosted on GitHub Pages. It has no build step.
 ## Current status: preview mode
 
 The form, validation, Android notice, privacy agreement, and confirmation screen all work.
-**Registrations are not sent or saved yet.** The page tells visitors this. A storage backend
-hasn't been chosen. GitHub Pages only serves static files, so it can't store submissions itself.
+**Registrations are not saved until the backend is connected.** Until then, the page tells visitors this.
 
-## Turning on real submissions
+## Backend: Google Sheet + Apps Script
 
-1. Deploy an endpoint that accepts a `POST` with a JSON body (sent as `text/plain` to avoid a CORS
-   preflight). The body contains `firstName, lastName, phone, email, phoneType, floor, wing,
-   privacyAgreed, privacyVersion, requestId`. The endpoint should respond `{"ok": true}` only after
-   a durable save, or `{"ok": false, "message": "..."}` on failure.
-2. The endpoint must run its own validation. `validation.js` is dependency-free and can be reused
-   on the server: `validateRegistration()` returns the normalized record. Store a server timestamp
-   for `privacy_accepted_at` and `created_at`. Use `requestId` to ignore duplicate submissions.
-3. In `index.html`, set `window.BLUE_CONFIG.submitUrl` to the endpoint URL.
-   This removes the preview notices and the "Back to form" button automatically.
+[`backend/`](backend/) contains a Google Apps Script that:
+- saves each sign-up to a private Google Sheet, with a timestamp and the privacy version accepted
+- rejects a phone number that's already in the sheet with **"This number already enrolled"**
+- emails the owner **"A new Fan wants to join"** with the fan's details and an attached contact
+  card (.vcf). Tap the card to add the fan to iPhone Contacts.
 
-The URL doesn't change when you add a backend, so the QR code can be printed now.
+Setup steps are in [`backend/README.md`](backend/README.md). Once the script is deployed, set
+`window.BLUE_CONFIG.submitUrl` in `index.html` to its `/exec` URL. This removes the preview notices
+automatically. The page URL doesn't change, so the QR code can be printed now.
 
-Never commit registration data, credentials, or API secrets to this public repository.
+Who can see what: members see each other only in the iMessage group chat. Email is only for the
+owner's contacts. The sheet is private, and the web app can't read data back.
+
+Never commit registration data or credentials to this public repository.
 
 ## Files
 
@@ -34,12 +34,13 @@ Never commit registration data, credentials, or API secrets to this public repos
 - `styles.css`: styles, with automatic light and dark mode
 - `validation.js`: shared phone/email/field rules, used by the browser (and later the server)
 - `app.js`: form behavior: phone formatting, status messages, submit, and confirmation
+- `backend/Code.gs`: Apps Script backend (save, duplicate check, alert email)
 - `assets/blue-square.jpg`: a crop of the owner-supplied `blue.jpeg` with the black bars removed
 
 ## Tests
 
 ```
-npm test                       # validation rules (Node 18+)
+npm test                       # validation rules + backend logic (Node 18+)
 npm install && npm run test:browser   # real-browser checks using installed Google Chrome
 ```
 

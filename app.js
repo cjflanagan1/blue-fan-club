@@ -19,6 +19,8 @@
 
   let submitting = false;
   let serverError = '';
+  let duplicatePhone = '';
+  let duplicateMessage = '';
   let requestId = newRequestId();
 
   if (!preview) root.querySelectorAll('[data-preview-only]').forEach(el => el.remove());
@@ -61,19 +63,21 @@
   }
 
   function update() {
-    showFieldError(phone, phoneErrorEl, V.phoneError(phone.value.trim()));
+    const isDuplicate = duplicatePhone !== '' && phone.value.trim() === duplicatePhone;
+    showFieldError(phone, phoneErrorEl, isDuplicate ? duplicateMessage : V.phoneError(phone.value.trim()));
     showFieldError(email, emailErrorEl, V.emailError(email.value));
     androidNote.hidden = phoneType.value !== 'Android';
 
     const { problems } = V.validateRegistration(readForm());
-    submit.disabled = submitting || problems.length > 0;
+    submit.disabled = submitting || isDuplicate || problems.length > 0;
 
     let message;
     if (submitting) message = 'Submitting your registration…';
     else if (problems.length) message = 'Please complete the following to join: ' + problems.join(', ') + '.';
+    else if (isDuplicate) message = duplicateMessage;
     else if (serverError) message = serverError;
     else message = 'All required fields are complete. You can join the fan club.';
-    missing.classList.toggle('bf-error', !submitting && !problems.length && !!serverError);
+    missing.classList.toggle('bf-error', !submitting && !problems.length && (isDuplicate || !!serverError));
     if (missing.textContent !== message) missing.textContent = message;
     return problems;
   }
@@ -101,7 +105,9 @@
     let body = null;
     try { body = await response.json(); } catch (_) { /* non-JSON response */ }
     if (!response.ok || !body || body.ok !== true) {
-      throw new Error((body && body.message) || 'We could not save your registration.');
+      const error = new Error((body && body.message) || 'We could not save your registration.');
+      error.code = body && body.code;
+      throw error;
     }
   }
 
@@ -110,7 +116,7 @@
 
   form.addEventListener('submit', async event => {
     event.preventDefault();
-    if (submitting || update().length) return;
+    if (submitting || update().length || submit.disabled) return;
     const data = readForm();
     const isAndroid = data.phoneType === 'Android';
     if (preview) { showConfirmation(isAndroid); return; }
@@ -122,7 +128,12 @@
       await send(data);
       showConfirmation(isAndroid);
     } catch (err) {
-      serverError = err.message + ' Your information is still filled in. Please try again.';
+      if (err.code === 'duplicate') {
+        duplicatePhone = data.phone.trim();
+        duplicateMessage = err.message;
+      } else {
+        serverError = err.message + ' Your information is still filled in. Please try again.';
+      }
     } finally {
       submitting = false;
       submit.textContent = SUBMIT_LABEL;
