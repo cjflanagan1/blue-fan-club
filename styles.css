@@ -1,0 +1,33 @@
+:root{color-scheme:light dark}
+body{margin:0;background:light-dark(#f3f3f3,#121212)}
+[hidden]{display:none!important}
+#blue-fan-club{padding:24px 12px;display:flex;justify-content:center;font-family:Arial,sans-serif;color:light-dark(#222,#eee)}
+#blue-fan-club *{box-sizing:border-box}
+#blue-fan-club .bf-phone{width:100%;max-width:390px;background:light-dark(#fff,#202020);border:1px solid light-dark(#aaa,#666);border-radius:24px;padding:26px 24px}
+#blue-fan-club header{text-align:center}
+#blue-fan-club .bf-photo{height:160px;width:160px;border:1px solid light-dark(#999,#888);background:light-dark(#f2f2f2,#303030);border-radius:50%;margin:0 auto 20px;overflow:hidden}
+#blue-fan-club .bf-photo img{width:100%;height:100%;object-fit:cover;display:block}
+#blue-fan-club .bf-name{font-size:18px;font-weight:700;letter-spacing:1px;margin:0 0 2px}
+#blue-fan-club .bf-eyebrow{font-size:12px;letter-spacing:1.5px;font-weight:600;margin:0 0 14px}
+#blue-fan-club h1{font-size:25px;line-height:1.2;margin:0 0 10px;font-weight:600}
+#blue-fan-club h2{font-size:23px}
+#blue-fan-club p{font-size:14px;line-height:1.5;margin:0 0 20px}
+#blue-fan-club .bf-note{font-size:12px;color:light-dark(#555,#bbb);margin:0 0 16px}
+#blue-fan-club form>label{display:block;font-size:14px;font-weight:600;margin:0 0 7px}
+#blue-fan-club label span{font-weight:400;color:light-dark(#555,#bbb)}
+#blue-fan-club form>input,#blue-fan-club form>select{width:100%;min-height:46px;border:1px solid light-dark(#888,#777);border-radius:6px;background:light-dark(#fff,#282828);color:inherit;padding:11px 12px;font:16px Arial,sans-serif;margin-bottom:19px}
+#blue-fan-club form>input[aria-invalid=true]{border:2px solid light-dark(#a51c1c,#ffb4b4)}
+#blue-fan-club input:focus-visible,#blue-fan-club select:focus-visible,#blue-fan-club button:focus-visible,#blue-fan-club h2:focus-visible{outline:3px solid #517da6;outline-offset:3px}
+#blue-fan-club .bf-privacy{margin:4px 0 20px;padding-top:16px;border-top:1px solid light-dark(#ccc,#666)}
+#blue-fan-club .bf-privacy h2{font-size:16px;margin:0 0 10px}
+#blue-fan-club .bf-privacy p{font-size:13px;margin:0 0 12px}
+#blue-fan-club .bf-agreement{display:flex;gap:10px;align-items:flex-start;padding:8px 0;min-height:44px;font-size:13px;line-height:1.5}
+#blue-fan-club .bf-agreement input{flex:0 0 20px;width:20px;height:20px;margin:0;accent-color:light-dark(#333,#ddd)}
+#blue-fan-club .bf-agreement span{color:inherit;font-weight:400}
+#blue-fan-club button{min-height:48px;width:100%;border:1px solid light-dark(#333,#ddd);border-radius:6px;background:light-dark(#333,#ddd);color:light-dark(#fff,#222);font:600 15px Arial,sans-serif;padding:12px;cursor:pointer}
+#blue-fan-club button:disabled{opacity:.45;cursor:not-allowed}
+#blue-fan-club .bf-demo{text-align:center;margin:13px 0 0}
+#blue-fan-club .bf-success{text-align:center;padding:24px 0}
+#blue-fan-club .bf-notice{font-size:13px;line-height:1.5;background:light-dark(#f0f0f0,#333);padding:12px;border-radius:6px;margin:0 0 19px}
+#blue-fan-club .bf-error{color:light-dark(#a51c1c,#ffb4b4)}
+#blue-fan-club .bf-notice.bf-error{border-left:4px solid currentColor}
