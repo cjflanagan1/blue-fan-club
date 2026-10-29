@@ -47,3 +47,12 @@ npm install && npm run test:browser   # real-browser checks using installed Goog
 ## Local preview
 
 Open `index.html` in a browser, or run `python3 -m http.server` in this folder.
+
+## QR code
+
+`qr/` holds the trading-card QR code. It encodes `https://cjflanagan1.github.io/blue-fan-club/`
+with error correction level H, so it still scans with the red heart in the center.
+- `blue-fan-club-qr-heart.svg` / `.png`: matches the card design. Use the SVG for print.
+- `blue-fan-club-qr-plain.svg` / `.png`: a fallback without the heart.
+
+To regenerate and re-run the scan checks: `pip install segno pillow opencv-python-headless`, then `python qr/make_qr.py`.
